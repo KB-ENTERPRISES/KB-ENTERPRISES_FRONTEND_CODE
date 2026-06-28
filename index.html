@@ -3675,7 +3675,7 @@ async function renderAuditLogs(el) {
                   <td>${p.uploadedBy}</td>
                   <td style="font-size:12px">${fmt(p.uploadedAt)}</td>
                   <td>${p.screenshotUrl
-                    ? '<a href="' + p.screenshotUrl + '" target="_blank" rel="noopener"><img src="' + p.screenshotUrl + '" style="max-width:80px;max-height:60px;border-radius:4px;border:1px solid var(--border);cursor:pointer" onerror="this.style.display='none'"></a>'
+                    ? '<a href="' + p.screenshotUrl + '" target="_blank" rel="noopener"><img src="' + p.screenshotUrl + '" style="max-width:80px;max-height:60px;border-radius:4px;border:1px solid var(--border);cursor:pointer" onerror="this.style.display=&apos;none&apos;"></a>'
                     : '—'}</td>
                 </tr>`).join('')}
             </tbody>
