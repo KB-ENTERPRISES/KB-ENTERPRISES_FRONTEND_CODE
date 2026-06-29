@@ -115,6 +115,21 @@ html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   background: rgba(255,255,255,0.35);
   border-radius: 999px;
 }
+.train-rail-top {
+  position: absolute;
+  left: 0; right: 0; top: 10px;
+  height: 6px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 999px;
+}
+.train-rail-top::before {
+  content: '';
+  position: absolute;
+  left: 8px; right: 8px; top: -14px;
+  height: 4px;
+  background: rgba(255,255,255,0.35);
+  border-radius: 999px;
+}
 @keyframes train-roll {
   0%   { left: -220px; }
   100% { left: 100%; }
@@ -1826,6 +1841,7 @@ input:focus, select:focus, textarea:focus {
         <div class="train-wheel"></div>
         <div class="train-wheel"></div>
       </div>
+      <div class="train-rail-top"></div>
       <div class="train-rail"></div>
     </div>
     <div class="loader-text">
