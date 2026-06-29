@@ -2708,10 +2708,10 @@ function openClockPicker() {
 function buildClockHTML() {
   const numbers = _clockMode === 'hour'
     ? [12,1,2,3,4,5,6,7,8,9,10,11]
-    : Array.from({length: 60}, (_, i) => i);
+    : [0,5,10,15,20,25,30,35,40,45,50,55];
 
   const dots = numbers.map((n, i) => {
-    const angle = (i * 6 - 90) * Math.PI / 180;
+    const angle = (i * 30 - 90) * Math.PI / 180;
     const x = 110 + 85 * Math.cos(angle);
     const y = 110 + 85 * Math.sin(angle);
     const isSelected = _clockMode === 'hour' ? n === _selectedHour : n === _selectedMinute;
@@ -2724,7 +2724,7 @@ function buildClockHTML() {
     <div class="clock-time-display">
       <span class="${_clockMode==='hour'?'active':''}" onclick="_clockMode='hour';openModal(buildClockHTML())">${String(_selectedHour).padStart(2,'0')}</span>
       :
-      <input id="manual-min-input" type="number" min="0" max="59" value="${_selectedMinute}" style="width:52px;font-size:24px;font-weight:700;text-align:center;border:none;border-bottom:2px solid var(--accent);background:transparent;color:var(--text);outline:none">
+      <span class="${_clockMode==='minute'?'active':''}" onclick="_clockMode='minute';openModal(buildClockHTML())">${String(_selectedMinute).padStart(2,'0')}</span>
       <div class="clock-ampm-toggle">
         <button class="${_selectedAmPm==='AM'?'active':''}" onclick="_selectedAmPm='AM';openModal(buildClockHTML())">AM</button>
         <button class="${_selectedAmPm==='PM'?'active':''}" onclick="_selectedAmPm='PM';openModal(buildClockHTML())">PM</button>
@@ -2749,11 +2749,6 @@ function pickClockValue(n) {
 
 function confirmClockTime() {
   const h = String(_selectedHour).padStart(2,'0');
-  const rawMin = document.getElementById('manual-min-input');
-  if (rawMin) {
-    const v = parseInt(rawMin.value);
-    if (!isNaN(v) && v >= 0 && v <= 59) _selectedMinute = v;
-  }
   const m = String(_selectedMinute).padStart(2,'0');
   document.getElementById('po-eta-display').value = `${h}:${m} ${_selectedAmPm}`;
   closeModal();
