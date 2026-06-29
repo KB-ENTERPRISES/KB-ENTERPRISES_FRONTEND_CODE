@@ -1439,28 +1439,13 @@ table.dt tbody tr:hover td { background: var(--bg); }
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-  .modal-overlay, .modal, .receipt-card, .receipt-card * {
-    visibility: visible;
-  }
-  .modal-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    background: white;
-  }
-  .modal {
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    max-width: 100%;
-  }
-  .modal-close, .print-btn-row {
-    display: none !important;
-  }
+  body > *:not(.modal-overlay) { display: none !important; }
+  .modal-overlay { background: none !important; box-shadow: none !important; position: static !important; display: block !important; padding: 0 !important; }
+  .modal { box-shadow: none !important; padding: 0 !important; max-height: none !important; overflow: visible !important; }
+  .modal-title { display: none !important; }
+  .print-btn-row { display: none !important; }
+  .receipt-card { box-shadow: none !important; border: none !important; width: 100% !important; }
+  @page { margin: 10mm; size: A4; }
 }
 
 
