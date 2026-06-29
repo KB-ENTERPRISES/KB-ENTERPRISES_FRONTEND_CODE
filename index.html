@@ -3214,7 +3214,7 @@ async function submitOrder() {
   if (!Object.keys(orderCart).length) { toast('Select at least one item', 'err'); return; }
   const items = Object.keys(orderCart).map(id => {
     const p = PRODUCTS.find(x => x.id === id);
-    return { productId: id, name: p.name, qty: orderCart[id], price: p.price };
+    return { productId: id, name: p.name, qty: orderCart[id], price: Number(p.price) };
   });
 
   try {
