@@ -2379,9 +2379,13 @@ async function loginAs(role) {
       const pass  = document.getElementById(passId).value;
       if (!email || !pass) { toast('Enter your email and password', 'err'); return; }
       const data = await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password: pass })
+      method: 'POST',
+      body: JSON.stringify({ email, password: pass })
       });
+      if (data.role === 'ADMIN') {
+         toast('Please use the Admin tab to sign in as admin.', 'err');
+         return;
+      }
       currentUser = data;
       sessionStorage.setItem('currentUser', JSON.stringify(data));
     } else {
