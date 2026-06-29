@@ -3983,9 +3983,24 @@ function outsideModal(e) { if (e.target === document.getElementById('modal-overl
 function printReceipt() {
   const el = document.getElementById('print-receipt');
   if (!el) return;
-  el.classList.add('print-area');
-  window.print();
-  el.classList.remove('print-area');
+  const win = window.open('', '_blank', 'width=800,height=600');
+  win.document.write(`<!DOCTYPE html><html><head><title>KB Enterprises Receipt</title><style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+    .receipt-card { max-width: 480px; margin: 0 auto; padding: 32px; border: 1px solid #eee; border-radius: 12px; }
+    .receipt-header { text-align: center; margin-bottom: 20px; }
+    .receipt-title { font-size: 22px; font-weight: 800; letter-spacing: 2px; }
+    .receipt-subtitle { font-size: 13px; color: #666; margin-top: 4px; }
+    .receipt-meta { margin: 16px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 12px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .receipt-meta div span { display: block; font-size: 10px; color: #999; text-transform: uppercase; }
+    .receipt-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+    .receipt-table th { text-align: left; font-size: 11px; color: #999; border-bottom: 1px solid #eee; padding: 6px 0; }
+    .receipt-table td { padding: 8px 0; font-size: 13px; border-bottom: 1px solid #f5f5f5; }
+    .receipt-total-row { display: flex; justify-content: space-between; font-weight: 700; font-size: 16px; color: #e11d48; padding: 12px 0; border-top: 2px solid #e11d48; }
+    .receipt-footer { text-align: center; font-size: 11px; color: #999; margin-top: 20px; }
+  </style></head><body>${el.outerHTML}</body></html>`);
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); win.close(); }, 500);
 }
 
   
