@@ -2354,12 +2354,16 @@ async function signupAs() {
   if (!fname || !email || !pass) { toast('Fill in all required fields', 'err'); return; }
   if (pass.length < 6) { toast('Password must be at least 6 characters', 'err'); return; }
   try {
-    const data = await apiFetch('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ firstName: fname, lastName: lname, email, password: pass, role })
-    });
-    currentUser = data;
-    sessionStorage.setItem('currentUser', JSON.stringify(data));
+    const data = await apiFetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password: pass })
+      });
+      if (role === 'user' && data.role === 'ADMIN') {
+        toast('Please use the Admin tab to sign in as admin.', 'err');
+        return;
+      }
+      currentUser = data;
+      sessionStorage.setItem('currentUser', JSON.stringify(data));
     await loadCrew();
     launchApp();
     resumeGuestIntent();
