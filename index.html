@@ -3323,10 +3323,22 @@ async function renderNotifications(el) {
       <div id="notif-list">
         ${!notifs.length
           ? '<p class="muted small tc" style="padding:24px 0">No notifications.</p>'
-          : notifs.map(n => `<div class="notif-item${n.read?'':' unread'}">
-              <div class="notif-msg">${n.message}</div>
-              <div class="notif-ts">${fmt(n.time)}</div>
-            </div>`).join('')}
+          : notifs.map(n => {
+              const isReceipt = n.message.startsWith('RECEIPT:');
+              let displayMsg = n.message;
+              let receiptBtn = '';
+              if (isReceipt) {
+                const parts = n.message.split(':');
+                const oid = parts[1];
+                displayMsg = parts.slice(2).join(':');
+                receiptBtn = `<button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="openReceipt('${oid}')">View & Download Receipt</button>`;
+              }
+              return `<div class="notif-item${n.read?'':' unread'}">
+                <div class="notif-msg">${displayMsg}</div>
+                ${receiptBtn}
+                <div class="notif-ts">${fmt(n.time)}</div>
+              </div>`;
+            }).join('')}
       </div>
     </div>`;
   } catch (e) { el.innerHTML = errState(e.message); }
