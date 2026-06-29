@@ -2089,7 +2089,7 @@ function renderTrainSuggestions(matches) {
   ).join('');
   container.classList.remove('hidden');
   container.querySelectorAll('.autocomplete-item').forEach(item => {
-    item.onclick = () => {
+    item.onmousedown = () => {
       const trainNameInput = document.getElementById('po-trainname');
       const trainNoInput = document.getElementById('po-trainno');
       const note = document.getElementById('train-autofill-note');
@@ -2123,7 +2123,7 @@ function attachTrainAutocomplete() {
   };
 
   trainNameInput.onfocus = updateSuggestions;
-  trainNameInput.onblur = () => setTimeout(() => renderTrainSuggestions([]), 150);
+  trainNameInput.onblur = () => setTimeout(() => renderTrainSuggestions([]), 300);
 }
 
 
