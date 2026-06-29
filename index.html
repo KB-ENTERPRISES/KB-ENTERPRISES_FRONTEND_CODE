@@ -1440,16 +1440,14 @@ table.dt tbody tr:hover td { background: var(--bg); }
 
 @media print {
   body * { visibility: hidden; }
-  #print-receipt, #print-receipt * { visibility: visible; }
-  #print-receipt {
+  .print-area, .print-area * { visibility: visible; }
+  .print-area {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 20px;
-    box-shadow: none !important;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
   }
-  .print-btn-row { display: none !important; }
   @page { margin: 10mm; size: A4; }
 }
 
@@ -3768,7 +3766,7 @@ async function openReceipt(oid, orderData) {
       <div class="modal-title">Receipt — ${o.id}</div>
       ${receiptHTML(o)}
       <div class="print-btn-row">
-        <button class="btn btn-primary btn-full" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn btn-primary btn-full" onclick="printReceipt()">Print / Save PDF</button>
         <button class="btn btn-outline btn-full" onclick="closeModal()">Close</button>
       </div>`);
   } catch (e) { toast(e.message, 'err'); }
@@ -3974,6 +3972,23 @@ function openModal(html) {
 function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); }
 function outsideModal(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
 
+
+
+
+/* ════════════════════════════════════════════════════════
+   for printing receipt 
+════════════════════════════════════════════════════════ */
+
+
+function printReceipt() {
+  const el = document.getElementById('print-receipt');
+  if (!el) return;
+  el.classList.add('print-area');
+  window.print();
+  el.classList.remove('print-area');
+}
+
+  
 /* ════════════════════════════════════════════════════════
    TOAST
 ════════════════════════════════════════════════════════ */
