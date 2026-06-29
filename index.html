@@ -2708,10 +2708,10 @@ function openClockPicker() {
 function buildClockHTML() {
   const numbers = _clockMode === 'hour'
     ? [12,1,2,3,4,5,6,7,8,9,10,11]
-    : [0,5,10,15,20,25,30,35,40,45,50,55];
+    : Array.from({length: 60}, (_, i) => i);
 
   const dots = numbers.map((n, i) => {
-    const angle = (i * 30 - 90) * Math.PI / 180;
+    const angle = (i * 6 - 90) * Math.PI / 180;
     const x = 110 + 85 * Math.cos(angle);
     const y = 110 + 85 * Math.sin(angle);
     const isSelected = _clockMode === 'hour' ? n === _selectedHour : n === _selectedMinute;
