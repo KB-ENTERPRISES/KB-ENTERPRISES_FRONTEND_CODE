@@ -3275,27 +3275,37 @@ async function renderMyOrders(el) {
   try {
     const orders = await apiFetch('/orders/my');
     let query = '';
-    const draw = () => {
+
+    const renderResults = () => {
       const filtered = filterOrdersByQuery(orders, query);
-      el.innerHTML = `<div class="page-header">
-        <div><div class="section-title">My Orders</div>
-        <div class="section-sub">${orders.length} order${orders.length !== 1 ? 's' : ''} total</div></div>
-        <button class="btn btn-primary btn-sm" onclick="navigateTo('place-order')">New Order</button>
-      </div>
-      <div class="search-filter-row">
-        <input type="search" placeholder="Search by order ID, train, or item…" value="${query}"
-          oninput="window.__orderSearch(this.value)">
-      </div>
-      <div id="orders-list"></div>`;
-      const list = document.getElementById('orders-list');
+      const list = document.createElement('div');
       if (!filtered.length) {
         list.appendChild(emptyState(query ? 'No orders match your search.' : 'No orders placed yet.'));
-        return;
+      } else {
+        filtered.forEach(o => list.appendChild(orderCard(o, 'user')));
       }
-      filtered.forEach(o => list.appendChild(orderCard(o, 'user')));
+      return list.innerHTML;
     };
-    window.__orderSearch = q => { query = q; draw(); };
-    draw();
+
+    const redrawResults = () => {
+      const holder = document.getElementById('orders-list');
+      if (holder) holder.innerHTML = renderResults();
+    };
+
+    el.innerHTML = `<div class="page-header">
+      <div><div class="section-title">My Orders</div>
+      <div class="section-sub">${orders.length} order${orders.length !== 1 ? 's' : ''} total</div></div>
+      <button class="btn btn-primary btn-sm" onclick="navigateTo('place-order')">New Order</button>
+    </div>
+    <div class="search-filter-row">
+      <input type="search" id="my-orders-search" placeholder="Search by order ID, train, or item…" value="${query}">
+    </div>
+    <div id="orders-list">${renderResults()}</div>`;
+
+    document.getElementById('my-orders-search').oninput = (e) => {
+      query = e.target.value;
+      redrawResults();
+    };
   } catch (e) { el.innerHTML = errState(e.message); }
 }
 
@@ -3303,23 +3313,34 @@ async function renderPendingOrders(el) {
   try {
     const orders = await apiFetch('/orders/pending');
     let query = '';
-    const draw = () => {
+
+    const renderResults = () => {
       const filtered = filterOrdersByQuery(orders, query);
-      el.innerHTML = `<div class="page-header"><div><div class="section-title">Incoming Orders</div>
-        <div class="section-sub">${orders.length} waiting · Accept to begin delivery</div></div></div>
-      <div class="search-filter-row">
-        <input type="search" placeholder="Search orders…" value="${query}" oninput="window.__orderSearch(this.value)">
-      </div>
-      <div id="orders-list"></div>`;
-      const list = document.getElementById('orders-list');
+      const list = document.createElement('div');
       if (!filtered.length) {
         list.appendChild(emptyState(query ? 'No matching orders.' : 'No pending orders at this time.'));
-        return;
+      } else {
+        filtered.forEach(o => list.appendChild(orderCard(o, 'crew')));
       }
-      filtered.forEach(o => list.appendChild(orderCard(o, 'crew')));
+      return list.innerHTML;
     };
-    window.__orderSearch = q => { query = q; draw(); };
-    draw();
+
+    const redrawResults = () => {
+      const holder = document.getElementById('orders-list');
+      if (holder) holder.innerHTML = renderResults();
+    };
+
+    el.innerHTML = `<div class="page-header"><div><div class="section-title">Incoming Orders</div>
+      <div class="section-sub">${orders.length} waiting · Accept to begin delivery</div></div></div>
+    <div class="search-filter-row">
+      <input type="search" id="pending-orders-search" placeholder="Search orders…" value="${query}">
+    </div>
+    <div id="orders-list">${renderResults()}</div>`;
+
+    document.getElementById('pending-orders-search').oninput = (e) => {
+      query = e.target.value;
+      redrawResults();
+    };
   } catch (e) { el.innerHTML = errState(e.message); }
 }
 
@@ -3327,23 +3348,34 @@ async function renderMyDeliveries(el) {
   try {
     const orders = await apiFetch('/orders/deliveries');
     let query = '';
-    const draw = () => {
+
+    const renderResults = () => {
       const filtered = filterOrdersByQuery(orders, query);
-      el.innerHTML = `<div class="page-header"><div><div class="section-title">My Deliveries</div>
-        <div class="section-sub">${orders.filter(o => o.status === 'ACCEPTED').length} active</div></div></div>
-      <div class="search-filter-row">
-        <input type="search" placeholder="Search deliveries…" value="${query}" oninput="window.__orderSearch(this.value)">
-      </div>
-      <div id="orders-list"></div>`;
-      const list = document.getElementById('orders-list');
+      const list = document.createElement('div');
       if (!filtered.length) {
         list.appendChild(emptyState(query ? 'No matching deliveries.' : 'No deliveries assigned yet.'));
-        return;
+      } else {
+        filtered.forEach(o => list.appendChild(orderCard(o, 'crew')));
       }
-      filtered.forEach(o => list.appendChild(orderCard(o, 'crew')));
+      return list.innerHTML;
     };
-    window.__orderSearch = q => { query = q; draw(); };
-    draw();
+
+    const redrawResults = () => {
+      const holder = document.getElementById('orders-list');
+      if (holder) holder.innerHTML = renderResults();
+    };
+
+    el.innerHTML = `<div class="page-header"><div><div class="section-title">My Deliveries</div>
+      <div class="section-sub">${orders.filter(o => o.status === 'ACCEPTED').length} active</div></div></div>
+    <div class="search-filter-row">
+      <input type="search" id="my-deliveries-search" placeholder="Search deliveries…" value="${query}">
+    </div>
+    <div id="orders-list">${renderResults()}</div>`;
+
+    document.getElementById('my-deliveries-search').oninput = (e) => {
+      query = e.target.value;
+      redrawResults();
+    };
   } catch (e) { el.innerHTML = errState(e.message); }
 }
 
@@ -3437,23 +3469,11 @@ async function renderAllOrders(el) {
     let orders = await apiFetch('/orders/all');
     let fs = 'all';
     let searchQ = '';
-    const draw = () => {
+
+    const renderResults = () => {
       let list = fs === 'all' ? orders : orders.filter(o => o.status.toLowerCase() === fs);
       list = filterOrdersByQuery(list, searchQ);
-      el.innerHTML = `
-        <div class="page-header">
-          <div><div class="section-title">All Orders</div></div>
-          <button class="btn btn-primary btn-sm" onclick="navigateTo('place-order')">New Order</button>
-        </div>
-        <div class="flex gap-8 mb-16 filter-pills">
-          ${['all','pending','accepted','completed'].map(s =>
-            `<button class="filter-pill ${fs===s?'active':''}" onclick="__fs('${s}')">${s.charAt(0).toUpperCase()+s.slice(1)}</button>`
-          ).join('')}
-        </div>
-        <div class="search-filter-row">
-          <input type="search" placeholder="Search orders, trains, customers…" value="${searchQ}"
-            oninput="window.__orderListFilter(this.value)">
-        </div>
+      return `
         <div class="card table-scroll" style="padding:0;overflow-x:auto">
           <table class="dt">
             <thead><tr><th>ID</th><th>Customer</th><th>Train / Stall</th><th>ETA</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
@@ -3476,10 +3496,39 @@ async function renderAllOrders(el) {
             </tbody>
           </table>
         </div>`;
-      window.__fs = s => { fs = s; draw(); };
-      window.__orderListFilter = q => { searchQ = q; draw(); };
     };
-    draw();
+
+    const redrawResults = () => {
+      const holder = document.getElementById('all-orders-results');
+      if (holder) holder.innerHTML = renderResults();
+    };
+
+    const redrawPills = () => {
+      document.querySelectorAll('#all-orders-pills .filter-pill').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === fs);
+      });
+    };
+
+    el.innerHTML = `
+      <div class="page-header">
+        <div><div class="section-title">All Orders</div></div>
+        <button class="btn btn-primary btn-sm" onclick="navigateTo('place-order')">New Order</button>
+      </div>
+      <div class="flex gap-8 mb-16 filter-pills" id="all-orders-pills">
+        ${['all','pending','accepted','completed'].map(s =>
+          `<button class="filter-pill ${fs===s?'active':''}" data-status="${s}" onclick="__fs('${s}')">${s.charAt(0).toUpperCase()+s.slice(1)}</button>`
+        ).join('')}
+      </div>
+      <div class="search-filter-row">
+        <input type="search" id="all-orders-search" placeholder="Search orders, trains, customers…" value="${searchQ}">
+      </div>
+      <div id="all-orders-results">${renderResults()}</div>`;
+
+    document.getElementById('all-orders-search').oninput = (e) => {
+      searchQ = e.target.value;
+      redrawResults();
+    };
+    window.__fs = s => { fs = s; redrawPills(); redrawResults(); };
   } catch (e) { el.innerHTML = errState(e.message); }
 }
 
