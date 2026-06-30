@@ -3534,9 +3534,11 @@ async function renderAllOrders(el) {
 
 async function renderCrewMgmt(el) {
   try {
-    const [crew, orders] = await Promise.all([apiFetch('/users/crew'), apiFetch('/orders/all')]);
+    const todayStr = getTodayIST();
+    const [crew, orders] = await Promise.all([apiFetch('/users/crew'), apiFetch('/orders/all?date=' + todayStr)]);
     el.innerHTML = `<div class="page-header">
-      <div><div class="section-title">Crew Management</div></div>
+      <div><div class="section-title">Crew Management</div>
+      <div class="section-sub">Showing today's activity · resets daily</div></div>
       <button class="btn btn-primary btn-sm" onclick="openCrewFormModal()">+ Add Crew</button>
     </div>`;
     crew.forEach(c => {
