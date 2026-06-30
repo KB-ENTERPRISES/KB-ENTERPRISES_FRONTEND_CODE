@@ -2107,15 +2107,19 @@ function renderTrainSuggestions(matches) {
   ).join('');
   container.classList.remove('hidden');
   container.querySelectorAll('.autocomplete-item').forEach(item => {
-    item.onclick = () => {
+    const selectThisTrain = (e) => {
+      e.preventDefault();
       const trainNameInput = document.getElementById('po-trainname');
       const trainNoInput = document.getElementById('po-trainno');
       const note = document.getElementById('train-autofill-note');
       trainNameInput.value = item.dataset.name;
       trainNoInput.value = item.dataset.number;
       note.textContent = `Matched ${item.dataset.name} — train number filled automatically.`;
-      item.parentElement.classList.add('hidden');
+      container.innerHTML = '';
+      container.classList.add('hidden');
     };
+    item.onmousedown = selectThisTrain;
+    item.ontouchstart = selectThisTrain;
   });
 }
 
