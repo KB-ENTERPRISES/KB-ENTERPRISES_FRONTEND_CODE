@@ -3438,7 +3438,7 @@ async function renderDashboard(el) {
         <div class="stat-card"><div class="stat-val" style="color:var(--amber)">${stats.pending}</div><div class="stat-label">Pending</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${stats.accepted}</div><div class="stat-label">In Progress</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)">${stats.completed}</div><div class="stat-label">Completed</div></div>
-        <div class="stat-card"><div class="stat-val">₹${stats.revenue}</div><div class="stat-label">Revenue</div></div>
+        <div class="stat-card"><div class="stat-val">₹${parseFloat(stats.revenue).toFixed(2)}</div><div class="stat-label">Revenue</div></div>
       </div>
       <div class="card mb-16">
         <div class="card-header"><div class="card-title">Recent Orders</div></div>
@@ -3551,7 +3551,7 @@ async function renderCrewMgmt(el) {
       const co   = orders.filter(o => o.assignedCrewId === c.crewId);
       const done = co.filter(o => o.status === 'COMPLETED').length;
       const act  = co.filter(o => o.status === 'ACCEPTED').length;
-      const rev  = co.filter(o => o.status === 'COMPLETED').reduce((s,o) => s + o.total, 0);
+      const rev  = co.filter(o => o.status === 'COMPLETED').reduce((s,o) => s + parseFloat(o.total), 0);
       const d = document.createElement('div');
       d.className = 'card mb-12';
       d.innerHTML = `
@@ -3569,7 +3569,7 @@ async function renderCrewMgmt(el) {
           <div><div style="font-size:18px;font-weight:700">${done}</div><div class="small muted">Completed</div></div>
           <div><div style="font-size:18px;font-weight:700">${act}</div><div class="small muted">Active</div></div>
           <div><div style="font-size:18px;font-weight:700">${co.length}</div><div class="small muted">Total</div></div>
-          <div><div style="font-size:18px;font-weight:700">₹${rev}</div><div class="small muted">Revenue</div></div>
+          <div><div style="font-size:18px;font-weight:700">₹${rev.toFixed(2)}</div><div class="small muted">Revenue</div></div>
         </div>
         <div class="flex gap-8 mt-12">
           <button class="btn btn-outline btn-xs" onclick='openCrewFormModal(${JSON.stringify(c).replace(/'/g,"&apos;")})'>Edit</button>
@@ -3638,7 +3638,7 @@ async function renderAnalytics(el) {
     const orders = await apiFetch('/orders/all?date=' + todayStr);
     const crew   = await apiFetch('/users/crew');
     const done   = orders.filter(o => o.status === 'COMPLETED');
-    const rev    = done.reduce((s,o) => s + o.total, 0);
+    const rev    = done.reduce((s,o) => s + parseFloat(o.total), 0);
     const avg    = done.length ? Math.round(rev / done.length) : 0;
     const ic = {};
     orders.forEach(o => o.items.forEach(i => { ic[i.name] = (ic[i.name]||0) + i.qty; }));
@@ -3652,7 +3652,7 @@ async function renderAnalytics(el) {
     el.innerHTML = `
       <div class="page-header"><div><div class="section-title">Analytics</div></div></div>
       <div class="stats-grid mb-16">
-        <div class="stat-card"><div class="stat-val">₹${rev}</div><div class="stat-label">Total Revenue</div></div>
+        <div class="stat-card"><div class="stat-val">₹${rev.toFixed(2)}</div><div class="stat-label">Total Revenue</div></div>
         <div class="stat-card"><div class="stat-val">${done.length}</div><div class="stat-label">Fulfilled</div></div>
         <div class="stat-card"><div class="stat-val">₹${avg}</div><div class="stat-label">Avg Order</div></div>
         <div class="stat-card"><div class="stat-val">${orders.length}</div><div class="stat-label">Total Orders</div></div>
