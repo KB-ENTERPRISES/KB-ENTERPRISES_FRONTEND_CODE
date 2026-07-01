@@ -2421,6 +2421,10 @@ async function loginAs(role) {
         toast('Please use the Admin tab to sign in as admin.', 'err');
         return;
       }
+      if (role === 'admin' && data.role !== 'ADMIN') {
+        toast('Access denied. This login is for administrators only.', 'err');
+        return;
+      }
       currentUser = data;
       sessionStorage.setItem('currentUser', JSON.stringify(data));
     } else {
