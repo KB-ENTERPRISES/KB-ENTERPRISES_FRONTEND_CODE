@@ -4123,24 +4123,24 @@ function printReceipt() {
 
   const blob = new Blob([fullHTML], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
 
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  const isAndroid = /Android/i.test(navigator.userAgent);
-
-  if (isIOS || isAndroid) {
-    const win = window.open(url, '_blank');
-    if (!win) {
-      window.location.href = url;
-    }
-    toast('Receipt opened in a new tab. Use browser menu → Print / Save as PDF.', 'ok');
+  if (win) {
+    win.addEventListener('load', () => {
+      setTimeout(() => {
+        win.focus();
+        win.print();
+      }, 250);
+    });
   } else {
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'KB-Receipt.html';
+    a.target = '_blank';
+    a.rel = 'noopener';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    toast('Receipt download started.', 'ok');
+    toast('Receipt opened in a new tab. Use browser print → Save as PDF.', 'ok');
   }
 
   setTimeout(() => URL.revokeObjectURL(url), 60000);
